@@ -1,0 +1,76 @@
+main
+    Int i = 0; // counter
+    List<Int> idealMoistureList = null;
+    List<Double> meanMoistureList = null;
+    Int length = 0; // length of the list returned by the query
+    Double meanMoisture = -1.0;
+    Int idealMoisture = -1;
+    Double moistureDifference = 0.0;
+
+    // get ideal moisture from the asset model of a planyt in a specific pot
+    idealMoistureList = access(
+    "PREFIX ast: <http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#>
+    SELECT ?obj
+    WHERE {
+        ?pot rdf:type ast:Pot ;
+            ast:hasShelfId 1 ;
+            ast:hasGroupId 1 ;
+            ast:hasGroupPosition 1 ; // introduce left and right
+            ast:hasPlant ?plant .
+        ?plant ast:hasIdealMoisture ?obj .
+    }");
+
+    length = idealMoistureList.length();
+    print("SPARQL query result length");
+	print(length);
+    print("          ");
+
+	while i < length do
+		idealMoisture = idealMoistureList.get(i);
+		print("ideal moisture:");
+        print(idealMoisture);
+		i = i+1;
+	end
+    print("          ");
+
+    // get mean moisture from the last 10 days of a specific pot
+	meanMoistureList = access(
+	"from(bucket: \"greenhouse\")
+        |> range(start: -10d)
+        |> filter(fn: (r) => r[\"_measurement\"] == \"ast:pot\")
+        |> filter(fn: (r) => r[\"_field\"] == \"moisture\")
+        |> filter(fn: (r) => r[\"groupId\"] == \"1\")
+        |> filter(fn: (r) => r[\"groupPosition\"] == \"1\")
+        |> filter(fn: (r) => r[\"shelfId\"] == \"1\")
+        |> keep(columns: [\"_value\"])
+        |> mean(column: \"_value\")",
+	INFLUXDB("config_local.yml"));
+
+	length = meanMoistureList.length();
+    print("INFLUX query result length");
+	print(length);
+    print("          ");
+
+	i = 0;
+	while i < length do
+		meanMoisture = meanMoistureList.get(i);
+        print("mean moisture:");
+		print(meanMoisture);
+		i = i+1;
+	end
+    print("          ");
+
+    // check if the difference between the ideal moisture and the mean moisture is greater than 2
+    moistureDifference = meanMoisture - idealMoisture;
+
+    if moistureDifference < 0 then
+        moistureDifference = moistureDifference * -1;
+    end
+
+    if moistureDifference > 2 then
+        print("moisture difference is greater than 2");
+    else
+        print("moisture difference is less than 2");
+    end
+end
+
