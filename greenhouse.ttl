@@ -70,17 +70,11 @@ sgh:isWateredBy rdf:type owl:ObjectProperty ;
 #    Data properties
 #################################################################
 
-###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#hasGroupId
-sgh:hasGroupId rdf:type owl:DatatypeProperty ;
-               rdfs:domain sgh:Pot ,
-                           sgh:Pump ;
-               rdfs:range xsd:int .
-
-
 ###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#hasGroupPosition
 sgh:hasGroupPosition rdf:type owl:DatatypeProperty ;
-                     rdfs:domain sgh:Pot ;
-                     rdfs:range xsd:int .
+                     rdfs:domain sgh:Pot ,
+                                 sgh:Pump ;
+                     rdfs:range xsd:string .
 
 
 ###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#hasHumidity
@@ -114,12 +108,18 @@ sgh:hasMoisture rdf:type owl:DatatypeProperty ;
 sgh:hasName rdf:type owl:DatatypeProperty .
 
 
-###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#hasShelfId
-sgh:hasShelfId rdf:type owl:DatatypeProperty ;
-               rdfs:domain sgh:Pot ,
-                           sgh:Pump ,
-                           sgh:Shelf ;
-               rdfs:range xsd:int .
+###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#hasPotPosition
+sgh:hasPotPosition rdf:type owl:DatatypeProperty ;
+                   rdfs:domain sgh:Pot ;
+                   rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#hasShelfFloor
+sgh:hasShelfFloor rdf:type owl:DatatypeProperty ;
+                  rdfs:domain sgh:Pot ,
+                              sgh:Pump ,
+                              sgh:Shelf ;
+                  rdfs:range xsd:int .
 
 
 ###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#hasTemperature
@@ -256,9 +256,9 @@ sgh:greenhouse rdf:type owl:NamedIndividual ,
 sgh:pot1 rdf:type owl:NamedIndividual ,
                   sgh:Pot ;
          sgh:hasPlant sgh:basilicum1 ;
-         sgh:hasGroupId 1 ;
-         sgh:hasGroupPosition 1 ;
-         sgh:hasShelfId 1 .
+         sgh:hasGroupPosition "right" ;
+         sgh:hasPotPosition "left" ;
+         sgh:hasShelfFloor 1 .
 
 
 ###  http://www.semanticweb.org/gianl/ontologies/2023/1/sirius-greenhouse#potGroup1
